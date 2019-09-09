@@ -127,10 +127,12 @@ export default class HTMLImage extends PureComponent {
 
     validImage (source, style, props = {}) {
         return (
-            <Image
-              source={source}
-              style={[style, { width: this.state.width, height: this.state.height, resizeMode: 'cover' }]}
-              {...props}
+             <Image
+                source={source}
+                resizeMode={'cover'}
+                resizeMethod={'resize'}
+                style={[style, { width: this.state.width, height: this.state.height }]}
+                {...props}
             />
         );
     }
