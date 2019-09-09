@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Image, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import ImageSize from 'react-native-image-size'
 
 export default class HTMLImage extends PureComponent {
     constructor (props) {
@@ -86,6 +87,26 @@ export default class HTMLImage extends PureComponent {
             });
         }
         // Fetch image dimensions only if they aren't supplied or if with or height is missing
+        
+        ImageSize.getSize(source.uri)
+            .then(size => {
+
+                let originalWidth = size.width
+                let originalHeight = size.height
+
+                if (!imagesMaxWidth) {
+                    return this.mounted && this.setState({ width: originalWidth, height: originalHeight });
+                }
+                const optimalWidth = imagesMaxWidth <= originalWidth ? imagesMaxWidth : originalWidth;
+                const optimalHeight = (optimalWidth * originalHeight) / originalWidth;
+                this.mounted && this.setState({ width: optimalWidth, height: optimalHeight, error: false });
+
+            })
+            .catch(
+                this.mounted && this.setState({ error: true })
+            )
+        
+       /*
         Image.getSize(
             source.uri,
             (originalWidth, originalHeight) => {
@@ -100,6 +121,8 @@ export default class HTMLImage extends PureComponent {
                 this.mounted && this.setState({ error: true });
             }
         );
+        */
+        
     }
 
     validImage (source, style, props = {}) {
